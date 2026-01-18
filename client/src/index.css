@@ -1,0 +1,26 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+ 
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Remove default blue outline on focus and replace with subtle ring */
+  input:focus, select:focus, textarea:focus {
+    @apply outline-none ring-2 ring-gray-400 ring-offset-1;
+  }
+}
+
+/* Smooth scrolling for the whole app */
+html {
+  scroll-behavior: smooth;
+}
