@@ -29,12 +29,29 @@ export default function Citizen() {
   const [loading, setLoading] = useState(false);
   const [locationNote, setLocationNote] = useState("");
 
+  // WhatsApp Contact States
+
+  const [houseNo, setHouseNo] = useState("");
+
   useEffect(() => {
     if (user) {
       fetchComplaints();
       fetchSchemes();
-    }
+      fetchHouseNumber(); 
+    } 
   }, [user]);
+
+  const fetchHouseNumber = async () => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("house_no")
+      .eq("id", user.id)
+      .single();
+
+    if (data && data.house_no) {
+      setHouseNo(data.house_no);
+    }
+  };
 
   const fetchSchemes = async () => {
     const { data } = await supabase.from("notifications").select("id, title, description").order("created_at", { ascending: false });
@@ -253,6 +270,35 @@ export default function Citizen() {
         <NavBtn icon={Camera} label="Raise" active={activeTab === "create"} onClick={() => setActiveTab("create")} />
         <NavBtn icon={Bell} label="Notices" active={activeTab === "notices"} onClick={() => setActiveTab("notices")} />
       </nav>
+
+       {/* ================= WHATSAPP FLOATING BUTTON ================= */}
+      <a
+        href={`https://wa.me/917306063033?text=${encodeURIComponent(
+          `Hello Ward Member, I am reaching out from the Citizen Dashboard. This is regarding an issue at House No: ${houseNo || "N/A"}.`
+        )}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-20 md:bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors z-[60] flex items-center justify-center group"
+        aria-label="Contact Ward Member on WhatsApp"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            fillRule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75 0 2.13.684 4.102 1.841 5.717l-1.42 4.26 4.37-1.408A9.704 9.704 0 0012 21.75c5.385 0 9.75-4.365 9.75-9.75s-4.365-9.75-9.75-9.75zm4.888 13.064c-.244.686-1.42 1.306-1.956 1.36-.51.05-1.162.24-3.32-.654-2.61-1.082-4.29-3.743-4.42-3.918-.13-.175-1.056-1.406-1.056-2.683 0-1.277.662-1.908.896-2.164.234-.256.51-.32.68-.32.17 0 .34.004.488.01.155.008.36-.06.561.427.206.497.703 1.714.767 1.842.064.128.106.277.021.448-.085.17-.128.277-.255.405-.128.128-.27.284-.384.384-.128.114-.263.24-.135.461.128.22.568.938 1.218 1.516.84.748 1.536.98 1.75.106.213-.873.128-.213.277-.128.405s.96.448 1.13.534c.17.085.277.128.319.213.043.085.043.49-.201 1.176z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <span className="absolute right-16 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md pointer-events-none">
+          Chat with Ward Member
+        </span>
+      </a>
+      {/* ============================================================== */}
+    
     </div>
   );
 }
